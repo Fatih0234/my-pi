@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "agentify-repo inventory",
+  "type": "object",
+  "required": [
+    "name",
+    "local_path",
+    "indexed_at",
+    "provenance",
+    "files",
+    "directories",
+    "ecosystems",
+    "commands"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "local_path": {
+      "type": "string"
+    },
+    "indexed_at": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "files": {
+      "type": "object"
+    },
+    "directories": {
+      "type": "object"
+    },
+    "ecosystems": {
+      "type": "array"
+    },
+    "commands": {
+      "type": "array"
+    }
+  }
+}

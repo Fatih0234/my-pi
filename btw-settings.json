@@ -1,0 +1,8 @@
+{
+  "modelStrategy": "custom",
+  "customProvider": "opencode-go",
+  "customModelId": "deepseek-v4-flash",
+  "reasoning": "minimal",
+  "maxTokens": 2000,
+  "cacheRetention": "short"
+}

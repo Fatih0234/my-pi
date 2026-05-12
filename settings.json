@@ -1,0 +1,13 @@
+{
+  "lastChangelogVersion": "0.74.0",
+  "defaultProvider": "opencode",
+  "defaultModel": "deepseek-v4-flash-free",
+  "defaultThinkingLevel": "xhigh",
+  "theme": "rosepine-pop",
+  "hideThinkingBlock": false,
+  "packages": [],
+  "extensions": [
+    "-extensions/multi-edit.ts",
+    "-extensions/uv.ts"
+  ]
+}

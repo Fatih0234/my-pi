@@ -1,0 +1,14 @@
+# Dependencies (install locally as needed)
+node_modules/
+extensions/node_modules/
+
+# macOS
+.DS_Store
+
+# Backups
+*.bak
+
+# Editor
+*.swp
+*.swo
+*~
