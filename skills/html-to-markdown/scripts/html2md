@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+html2md - convert existing HTML to Markdown using Python html2text
+
+Usage:
+  html2md [input.html|-] [-o output.md] [options]
+  cat input.html | html2md - > output.md
+
+Defaults:
+  --body-width=0 is used for stable, unwrapped Markdown unless --wrap/--body-width is provided.
+
+Options:
+  -o, --output PATH              Write Markdown to PATH instead of stdout.
+  --wrap N                       Wrap output at N characters. Use 0 for no wrap.
+  --body-width N                 Alias for --wrap N.
+  --body-width=N                 Alias for --wrap N.
+  --single-line-break            Use one line break after block elements. Requires no wrapping.
+  --reference-links              Use reference-style links instead of inline links.
+  --ignore-links                 Drop link formatting and keep link text.
+  --ignore-mailto-links          Drop mailto: links.
+  --protect-links                Wrap links in angle brackets to protect against line breaks.
+  --ignore-images                Drop image Markdown entirely.
+  --images-to-alt                Keep only image alt text.
+  --images-as-html               Emit image tags as raw HTML.
+  --images-with-size             Emit sized image tags as raw HTML.
+  --default-image-alt TEXT       Alt text to use when image alt is missing.
+  --pad-tables                   Pad Markdown table cells for readability.
+  --bypass-tables                Keep table structure as raw HTML.
+  --ignore-tables                Ignore table tags while keeping row text.
+  --wrap-tables                  Allow wrapping table-looking paragraphs.
+  --google-doc                   Convert HTML exported from Google Docs.
+  --dash-unordered-list          Use '-' instead of '*' for unordered list items.
+  --hide-strikethrough           Hide struck-through text. Most useful with --google-doc.
+  --backquote-code-style         Use fenced code blocks for <pre> blocks.
+  --mark-code                    Wrap <pre> blocks with [code]...[/code].
+  --ignore-emphasis              Drop emphasis formatting.
+  --asterisk-emphasis            Use '*' and '__' instead of '_' and '**'.
+  --unicode                      Prefer Unicode characters instead of ASCII approximations.
+  --escape-all                   Escape all Markdown-sensitive characters.
+  --include-sup-sub              Preserve <sup> and <sub> tags.
+  --decode-errors HANDLER        One of strict, ignore, replace. Default: html2text default.
+  --encoding ENCODING            Input encoding when reading a file. Default: utf-8.
+  --open-quote TEXT              Text used when opening <q>.
+  --close-quote TEXT             Text used when closing <q>.
+  -h, --help                     Show this help.
+
+Notes:
+  - html2text converts HTML it receives; it does not fetch URLs or execute JavaScript.
+  - For noisy webpages, extract the relevant HTML first, then run html2md.
+USAGE
+}
+
+require_html2text() {
+  if command -v html2text >/dev/null 2>&1; then
+    return 0
+  fi
+  if python3 -c 'import html2text' >/dev/null 2>&1; then
+    return 0
+  fi
+  cat >&2 <<'ERR'
+Error: Python package/command `html2text` was not found.
+Install it in the active environment with:
+  python3 -m pip install html2text
+ERR
+  exit 127
+}
+
+input="-"
+output=""
+body_width="0"
+single_line_break="false"
+encoding="utf-8"
+args=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    -o|--output)
+      [[ $# -ge 2 ]] || { echo "Error: $1 requires a path" >&2; exit 2; }
+      output="$2"
+      shift 2
+      ;;
+    --wrap|--body-width)
+      [[ $# -ge 2 ]] || { echo "Error: $1 requires a number" >&2; exit 2; }
+      body_width="$2"
+      shift 2
+      ;;
+    --body-width=*)
+      body_width="${1#*=}"
+      shift
+      ;;
+    --encoding)
+      [[ $# -ge 2 ]] || { echo "Error: --encoding requires a value" >&2; exit 2; }
+      encoding="$2"
+      shift 2
+      ;;
+    --decode-errors|--default-image-alt|--open-quote|--close-quote)
+      [[ $# -ge 2 ]] || { echo "Error: $1 requires a value" >&2; exit 2; }
+      args+=("$1" "$2")
+      shift 2
+      ;;
+    --single-line-break)
+      single_line_break="true"
+      args+=("--single-line-break")
+      shift
+      ;;
+    --reference-links|--ignore-links|--ignore-mailto-links|--protect-links|\
+    --ignore-images|--images-to-alt|--images-as-html|--images-with-size|\
+    --pad-tables|--bypass-tables|--ignore-tables|--wrap-tables|\
+    --google-doc|--dash-unordered-list|--hide-strikethrough|\
+    --backquote-code-style|--mark-code|--ignore-emphasis|--asterisk-emphasis|\
+    --escape-all|--include-sup-sub)
+      args+=("$1")
+      shift
+      ;;
+    --unicode)
+      args+=("--unicode-snob")
+      shift
+      ;;
+    --)
+      shift
+      if [[ $# -gt 0 ]]; then
+        if [[ "$input" != "-" ]]; then
+          echo "Error: multiple input files are not supported" >&2
+          exit 2
+        fi
+        input="$1"
+        shift
+      fi
+      ;;
+    -*)
+      echo "Error: unknown option: $1" >&2
+      echo "Run html2md --help for usage." >&2
+      exit 2
+      ;;
+    *)
+      if [[ "$input" != "-" ]]; then
+        echo "Error: multiple input files are not supported" >&2
+        exit 2
+      fi
+      input="$1"
+      shift
+      ;;
+  esac
+done
+
+if ! [[ "$body_width" =~ ^[0-9]+$ ]]; then
+  echo "Error: body width must be a non-negative integer" >&2
+  exit 2
+fi
+
+if [[ "$single_line_break" == "true" && "$body_width" != "0" ]]; then
+  echo "Error: --single-line-break requires --body-width=0 / --wrap 0" >&2
+  exit 2
+fi
+
+require_html2text
+
+cmd=(html2text "--body-width=${body_width}" "${args[@]}")
+
+if [[ -n "$output" ]]; then
+  mkdir -p "$(dirname "$output")"
+fi
+
+if [[ "$input" == "-" ]]; then
+  if [[ -n "$output" ]]; then
+    "${cmd[@]}" - "$encoding" > "$output"
+  else
+    "${cmd[@]}" - "$encoding"
+  fi
+else
+  if [[ ! -f "$input" ]]; then
+    echo "Error: input file not found: $input" >&2
+    exit 1
+  fi
+  if [[ -n "$output" ]]; then
+    "${cmd[@]}" "$input" "$encoding" > "$output"
+  else
+    "${cmd[@]}" "$input" "$encoding"
+  fi
+fi

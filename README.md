@@ -99,49 +99,63 @@ Fork the current pi session into a **git worktree on a new branch**. The ultimat
 
 | Extension | Description | Commands |
 |---|---|---|
-| **answer.ts** | Extracts questions from assistant responses and presents an interactive TUI for answering them. Perfect for Q&A workflows. | `/answer` |
-| **btw.ts** | [Featured ↑](#-btwts--btw-mode-cache-friendly-side-questions) Cache-friendly side-question extension. Asks follow-ups without disrupting the main context. | `/btw`, `/btw-settings` |
-| **coach.ts** | [Featured ↑](#-coachts--coach-mode) Toggle coach/implementation modes. Agent guides rather than writes code. | `/coach` |
-| **context-mode.ts** | [Featured ↑](#-context-modets--context-building-mode) Toggle context-building/implementation modes. Agent explores without implementing. | `/ctx` |
-| **context.ts** | TUI showing what's loaded: extensions, skills, project context files, token usage, and session cost. | `/context` |
-| **control.ts** | Inter-session communication via Unix domain sockets. Send messages, get summaries, clear sessions, coordinate between running pi instances. | `--session-control` flag |
-| **files.ts** | File explorer listing files in the current git tree. Quick actions: reveal, open, edit, diff. | `/files`, `/diff` |
-| **lightpanda.ts** | Integrates [Lightpanda](https://lightpanda.io) — a headless browser in Zig. 10x faster than Chrome for web scraping and automation. | `lightpanda_fetch`, `lightpanda_cdp` tools |
-| **lightpanda-puppeteer.ts** | Advanced browser automation via Lightpanda CDP + Puppeteer. Click, fill forms, take screenshots, run JS. | `browser_automate` tool |
-| **loop.ts** | Start a follow-up loop with a breakout condition. Keeps prompting until the agent signals completion. | `/loop` |
-| **multi-edit.ts** | Enhanced edit tool supporting batched edits, multi-file changes, and patch-mode (Codex-style `apply_patch`). Replaces the built-in edit tool. | `edit` tool (enhanced) |
-| **notify.ts** | Sends native desktop notifications when the agent finishes and is waiting for input. Uses OSC 777 escape sequences — no dependencies. | Automatic |
-| **prompt-editor.ts** | Advanced mode/configuration editor. Create and manage named modes with custom providers, models, and thinking levels. Mode files stored in `~/.pi/modes/`. | `/prompt` |
-| **review.ts** | Code review extension inspired by Codex. Review PRs (by number or URL), branches, commits, uncommitted changes, or specific folders. | `/review` |
-| **session-breakdown.ts** | Interactive analytics TUI showing session activity, token usage, and cost breakdowns per day and per model. GitHub-contributions-style calendar heatmap. | `/session-breakdown` |
+| **answer.ts** | Extracts questions from assistant responses and presents an interactive TUI for answering them. | `/answer` |
+| **brainstorming-mode.ts** | Toggle creative, critical brainstorming partner mode using the `brainstorming.md` prompt. | `/brainstorm` |
+| **btw.ts** | [Featured ↑](#-btwts--btw-mode-cache-friendly-side-questions) Cache-friendly side-question extension. | `/btw`, `/btw-settings` |
+| **caveman.ts** | Ultra-compressed response modes, including terse caveman and Wenyan-style variants. | `/caveman` |
+| **cmux-session.ts** | Bridges Pi session lifecycle events into cmux's restorable session store. | Automatic |
+| **coach.ts** | [Featured ↑](#-coachts--coach-mode) Toggle coach/implementation modes. | `/coach` |
+| **collab.ts** | Collaborative pacing mode for slower, interruptible, user-led coding sessions. | `/collab` |
+| **context-mode.ts** | [Featured ↑](#-context-modets--context-building-mode) Context-building mode that explores without committing to implementation. | `/ctx` |
+| **context.ts** | TUI showing loaded extensions, skills, context files, token usage, and session cost. | `/context` |
+| **control.ts** | Inter-session communication via Unix domain sockets for coordinating running pi instances. | `--session-control` flag |
+| **copy-all.ts** | Copies previous user and assistant messages in the current thread to the clipboard. | `/copy-all` |
+| **copy-compaction.ts** | Automatically copies compaction summaries to the clipboard. | Automatic |
+| **copy-context.ts** | Builds ChatGPT-ready Markdown bundles from selected files/folders and copies or writes them. | `/copy-context` |
+| **diff.ts** | Tracks files changed by the last agent run and opens selected files in Zed. | `/diff` |
+| **files.ts** | File explorer listing files in the current git tree with quick reveal/open/edit/diff actions. | `/files`, `/diff` |
+| **go-usage/index.ts** | Tracks and reports local OpenCode Go usage estimates and baselines. | `/go-usage` |
+| **handoff/index.ts** | Generates a concise handoff document so another agent can continue a session. | `/handoff` |
+| **lightpanda.ts** | Integrates Lightpanda for fast headless browser fetching and CDP access. | `lightpanda_fetch`, `lightpanda_cdp` tools |
+| **lightpanda-puppeteer.ts** | Browser automation via Lightpanda CDP and Puppeteer. | `browser_automate` tool |
+| **loop.ts** | Starts a follow-up loop with a breakout condition. | `/loop` |
+| **multi-edit.ts** | Enhanced edit tool supporting batched edits, multi-file changes, and patch-mode. | `edit` tool (enhanced) |
+| **notify.ts** | Native desktop notifications when the agent finishes and waits for input. | Automatic |
+| **pi-codex-goal/** | Codex-style long-running goal tracking with model-callable goal tools. | `/goal`, `/create-goal`, `get_goal`, `create_goal`, `update_goal` |
+| **pi-diff-review/** | Native diff review window with git diff, last commit, and all-files scopes. | `/diff-review` |
+| **project-zero-review.ts** | Reviews implementation against Project Zero contract files. | `/pz-review` |
+| **prompt-editor.ts** | Advanced mode/configuration editor for named modes, providers, models, and thinking levels. | `/prompt` |
+| **review.ts** | Code review extension for PRs, branches, commits, uncommitted changes, or folders. | `/review` |
+| **session-breakdown.ts** | Interactive analytics TUI for session activity, token usage, and cost breakdowns. | `/session-breakdown` |
 | **split-fork.ts** | [Featured ↑](#-split-forkts--split-fork) Fork session into a Ghostty split pane. | `/split-fork` |
-| **supacode/index.ts** | Reports agent lifecycle hooks back to Supacode via Unix domain socket. Integrates pi with Supacode's terminal management. | Automatic |
+| **supacode/index.ts** | Reports agent lifecycle hooks back to Supacode via Unix domain socket. | Automatic |
 | **tab-fork.ts** | [Featured ↑](#-tab-forkts--tab-fork) Fork session into a new Ghostty tab. | `/tab-fork` |
-| **todo.ts** | [Featured ↑](#-todots--todo-management) File-based todo management with TUI, tags, GitHub issues, and session-safe locking. | `/todos` |
-| **uv.ts** | Redirects python/pip/poetry commands to use `uv` instead. Intercepts bash commands and replaces them with equivalent `uv` commands. | Automatic |
-| **whimsical.ts** | Replaces the boring "Thinking..." spinner with fun random messages. Adds personality to the waiting experience. | Automatic |
+| **todo.ts** | [Featured ↑](#-todots--todo-management) File-based todo management with TUI, tags, GitHub issues, and locks. | `/todos`, `todo` tool |
+| **uv.ts** | Redirects Python/pip/poetry commands toward `uv` workflows. | Automatic |
+| **whimsical.ts** | Fun random waiting messages instead of the boring thinking spinner. | Automatic |
 | **worktree-fork.ts** | [Featured ↑](#-worktree-forkts--worktree-fork) Fork session into a git worktree on a new branch. | `/worktree-fork` |
 
 ---
 
 ## 📚 Skills
 
-Skills are the agent's instruction manual for specific tasks. They tell pi how to handle particular domains.
-
 | Skill | Description |
 |---|---|
-| **agent-browser-core** | Core usage guide for browser automation. Covers snapshot-and-ref workflow, navigation, clicking, forms, screenshots, tabs, auth, and troubleshooting. |
-| **agentify-repo** | Clone/index a GitHub repo and generate an agent-friendly navigation layer. For mapping unfamiliar codebases. |
+| **agent-browser-core** | Core browser automation guide for snapshot/ref workflows, navigation, forms, auth, screenshots, tabs, and troubleshooting. |
+| **agentify-repo** | Clone or index a GitHub repository and generate an agent-friendly navigation layer. |
+| **antigravity-web-research** | Web-grounded research sidecar for current docs, release notes, GitHub issues, and source-backed investigation. |
 | **commit** | Guidelines for making structured git commits. |
-| **doc-to-markdown** | Convert PDF, DOCX, HTML files (local or URL) to Markdown using `uvx markitdown`, with optional summarization. |
-| **frontend-design** | Design and implement distinctive, production-ready frontend interfaces with strong aesthetic direction. |
-| **github** | Interact with GitHub via the `gh` CLI. Issues, PRs, CI runs, and advanced queries. |
-| **native-web-search** | Trigger native web search for quick internet research with concise summaries and full source URLs. |
-| **supacode-cli** | Control Supacode from the terminal. Manage worktrees, tabs, and surfaces programmatically. |
-| **tmux** | Remote control tmux sessions for interactive CLIs (python, gdb, etc.) by sending keystrokes and scraping pane output. |
+| **doc-to-markdown** | Convert PDF, DOCX, HTML files or URLs to Markdown using `uvx markitdown`. |
+| **frontend-design** | Design and implement distinctive production-ready frontend interfaces. |
+| **github** | Interact with GitHub via `gh` for issues, PRs, CI runs, and API queries. |
+| **html-to-markdown** | Convert existing HTML files/snippets to Markdown with Python `html2text`. |
+| **native-web-search** | Trigger native web search for concise internet research with source URLs. |
+| **playwright-cli** | Automate browser interactions and work with Playwright tests from the CLI. |
+| **supacode-cli** | Control Supacode from the terminal: worktrees, tabs, and surfaces. |
+| **tmux** | Remote control tmux sessions by sending keystrokes and scraping pane output. |
 | **update-changelog** | Guidelines for maintaining structured changelogs. |
-| **uv** | Use `uv` instead of pip/python/venv for Python tooling. Inline script metadata, `uv run`, `uv add`. |
-| **web-browser** | Legacy browser skill. Controls Chrome/Chromium via CDP for clicking, filling forms, and navigating links. |
+| **uv** | Use `uv` instead of pip/python/venv for Python tooling. |
+| **web-browser** | Legacy Chrome/Chromium CDP browser-control skill. |
 
 ---
 
@@ -168,13 +182,21 @@ Set your theme in `settings.json`:
 
 ## 📝 Prompts
 
-Prompt templates that extend pi's default system prompt for specific tasks.
-
 | Prompt | Description |
 |---|---|
-| **init.md** | Scaffold or refactor an `AGENTS.md` file with project guidelines. Generates complete scaffold with project overview, dev environment setup, code style guidelines. |
-| **minify.md** | Review a codebase for structural simplicity. Suggests consolidations, deeper modules, elimination of shallow abstractions. Applies the simplification mandate principles. |
-| **test-hardening.md** | After implementation, adds meaningful tests for the change. Focuses on behavior, edge cases, and regressions. Follows existing test style. |
+| **agweb.md** | Create an objective Antigravity web-research brief and run the web-research skill. |
+| **brainstorming.md** | Brainstorming partner mode prompt for grounded ideation, critique, and next steps. |
+| **collect-success-criteria.md** | Collect success criteria before creating a pi-codex goal. |
+| **controlled-app-review-discovery.md** | Interactively review a working app, script, or MVP and map high-value review points. |
+| **create-goal.md** | Convert a plain task into a strict evidence-based pi-codex goal. |
+| **decision-review.md** | Evaluate whether a proposed decision or implementation is worth doing. |
+| **high-impact-follow-up.md** | Find one high-impact follow-up improvement. |
+| **init.md** | Scaffold or refactor an `AGENTS.md` file with project guidelines. |
+| **minify.md** | Review a codebase for structural simplicity and consolidation opportunities. |
+| **points.md** | Discover high-value isolated attention points and write them to `.agent/POINT_MAP.md`. |
+| **publish-session.md** | Commit and push only the current session's intended changes. |
+| **repo-discovery.md** | Discover and explain an indexed repository quickly: product, architecture, flows, risks, and next steps. |
+| **test-hardening.md** | Add meaningful tests for an implemented change. |
 
 ---
 
